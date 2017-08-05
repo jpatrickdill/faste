@@ -6,10 +6,14 @@ dictionary style caches
 =======================
 
 Faste is a cache library to allow many different cache algorithms in Python, with the functionality of a regular dict.
-Anything you can do to a dict, you can do to these caches.
+Anything you can do to a dict, you can do to these caches. https://docs.python.org/3/library/stdtypes.html#dict
 
 All The Caches(tm)
 ~~~~~~~~~~~~~~~~~~
+
+Every cache has the signature CacheNameHere(max_items)
+
+max_items is the max length of the cache before items start getting evicted.
 
 .. code:: python
 

@@ -9,6 +9,11 @@ Anything you can do to a dict, you can do to these caches.
 All The Caches(tm)
 ~~~~~~~~~~~~~~~~~~
 
+Every cache has the signature CacheNameHere(max_items)
+
+max_items is the max length of the cache before items start getting evicted.
+
+
 .. code:: python
 
     import faste
