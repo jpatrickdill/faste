@@ -11,13 +11,13 @@ setup(
     version=faste.__version__,
     url='https://github.com/reshanie/faste',
     license='MIT',
-    author='Patrick Dill, a/k/a reshanie',
+    author='Patrick Dill',
     author_email='jamespatrickdill@gmail.com',
     install_requires=[],
     download_url="http://github.com/reshanie/faste/archive/master.tar.gz",
 
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
@@ -25,7 +25,7 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
 
-    keywords="cache caches LIFO FIFO RR LRU MRU LFU memory dict dictionary",
+    keywords="faste cache caches LIFO FIFO RR LRU MRU LFU memory dict dictionary",
 
     packages=find_packages(exclude=["docs", ".idea"]),
 )
