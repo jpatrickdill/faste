@@ -1,3 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 tests.py
+dist/
+faste.egg-info/
+faste/__pycache__/

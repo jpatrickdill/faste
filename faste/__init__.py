@@ -21,3 +21,6 @@ SOFTWARE.
 """
 
 from .caches import RRCache, FIFOCache, LRUCache, MRUCache, LFUCache
+
+__version__ = "0.1"
+__author__ = "Patrick Dill"
