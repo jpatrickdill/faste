@@ -14,6 +14,7 @@ setup(
     author='Patrick Dill, a/k/a reshanie',
     author_email='jamespatrickdill@gmail.com',
     install_requires=[],
+    download_url="http://github.com/reshanie/faste/archive/master.tar.gz",
 
     classifiers=[
         "Development Status :: 3 - Alpha",
