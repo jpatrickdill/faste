@@ -5,6 +5,7 @@ Faste is a cache library to allow many different cache algorithms in Python, wit
 Anything you can do to a dict, you can do to these caches.
 
 All The Caches(tm) ::
+
     import faste
 
     # Random Replacement
