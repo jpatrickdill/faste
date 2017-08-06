@@ -352,7 +352,8 @@ class TimeoutCache:
     timeout : int
         Cache timeout in seconds. Must be > 0.
 
-    You can change the timeout at any time by changing the `timeout` attribute
+
+    You can change the timeout at any time by changing :attr:`timeout`
     """
 
     def __init__(self, timeout):
