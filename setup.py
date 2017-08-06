@@ -18,7 +18,7 @@ setup(
     description="dictionary style caches.",
     long_description=long_desc,
     version=faste.__version__,
-    url='https://github.com/reshanie/faste',
+    url='https://faste.readthedocs.io/',
     license='MIT',
     author='Patrick Dill',
     author_email='jamespatrickdill@gmail.com',
