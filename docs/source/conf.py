@@ -22,6 +22,9 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 import faste
 
+on_rtd = os.getenv('READTHEDOCS') == 'True'
+
+
 
 # -- General configuration ------------------------------------------------
 
@@ -32,8 +35,15 @@ import faste
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
+]
+
+if on_rtd:
+    extensions.append('sphinxcontrib.napoleon')
+else:
+    extensions.append('sphinx.ext.napoleon')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -92,7 +102,6 @@ autodoc_member_order = 'bysource'
 html_theme_options = {
     "font_family": '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;',
     "font_size": "13px",
-    "logo": "ropy.png"
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
