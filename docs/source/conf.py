@@ -40,7 +40,7 @@ extensions = [
     'sphinx.ext.extlinks',
 ]
 
-if on_rtd:
+if False:
     extensions.append('sphinxcontrib.napoleon')
 else:
     extensions.append('sphinx.ext.napoleon')
