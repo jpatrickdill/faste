@@ -1,8 +1,17 @@
+import os
+
 from setuptools import setup, find_packages
+
 import faste
+
+on_rtd = os.getenv('READTHEDOCS') == 'True'
 
 with open("README.rst", "r") as file:
     long_desc = file.read()
+
+requires = []
+if on_rtd:
+    requires.append("sphinxcontrib.napoleon")
 
 setup(
     name='faste',
@@ -13,7 +22,7 @@ setup(
     license='MIT',
     author='Patrick Dill',
     author_email='jamespatrickdill@gmail.com',
-    install_requires=[],
+    install_requires=requires,
     download_url="http://github.com/reshanie/faste/archive/master.tar.gz",
 
     classifiers=[
