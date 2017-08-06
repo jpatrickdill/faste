@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .caches import RRCache, FIFOCache, LRUCache, MRUCache, LFUCache
+from . import caches
 
 __version__ = "0.1.2"
 __author__ = "Patrick Dill"

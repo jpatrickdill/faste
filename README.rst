@@ -20,22 +20,22 @@ max_items is the max length of the cache before items start getting evicted.
 
     # Random Replacement
     # When cache is full, random items are removed to make space for new ones
-    RR = faste.RRCache(max_items)
+    RR = faste.caches.RRCache(max_items)
 
     # First In First Out
     # When cache is full, cache evicts the last key that was set
-    FIFO = faste.FIFOCache(max_items)
+    FIFO = faste.caches.FIFOCache(max_items)
 
     # Least Recently Used
     # When cache is full, least recently accessed item is evicted
-    LRU = faste.LRUCache(max_items)
+    LRU = faste.caches.LRUCache(max_items)
 
     # Most Recently Used
     # When cache is full, most recently accessed item is evicted
     # Useful for caches where old data is more commonly accessed
-    MRU = faste.MRUCache(max_items)
+    MRU = faste.caches.MRUCache(max_items)
 
     # Least Frequently Used
     # When cache is full, least frequently accessed item is evicted
-    LFU = faste.LFUCache(max_items)
+    LFU = faste.caches.LFUCache(max_items)
 
