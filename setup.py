@@ -11,7 +11,7 @@ with open("README.rst", "r") as file:
 
 requires = []
 if on_rtd:
-    requires.append("sphinxcontrib")
+    requires.append("sphinxcontrib-napoleon")
 
 setup(
     name='faste',
