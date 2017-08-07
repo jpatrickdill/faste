@@ -93,6 +93,9 @@ class RRCache(object):
     def __contains__(self, item):
         return item in self.keys()
 
+    def clear(self):
+        self._store = {}
+
     def update(self, *args, **kwargs):
         for kv in args:
             self[kv[0]] = kv[1]
@@ -284,6 +287,9 @@ class LFUCache(object):
     def __contains__(self, item):
         return item in self.keys()
 
+    def clear(self):
+        self._store = {}
+
     def pop(self, key):
         if key not in self._store.keys():
             raise KeyError("key {0!r} doesn't exist in cache".format(key))
@@ -351,6 +357,8 @@ class TimeoutCache:
     ----------
     timeout : int
         Cache timeout in seconds. Must be > 0.
+    max_size : int
+        Keyword to give a max amount of items. When this is reached, oldest item is evicted.
     populate : dict
         Keyword argument, dict to pre-populate cache with. Values will be evicted after the timeout, just
         like any others.
@@ -359,22 +367,27 @@ class TimeoutCache:
     You can change the timeout at any time by changing :attr:`timeout`
     """
 
-    def __init__(self, timeout, populate=None):
+    def __init__(self, timeout, max_size=None, populate=None):
         if timeout <= 0:
             raise ValueError("Timeout must be at least 0.")
+
+        self.max_size = max_size
+
+        self._store = {}  # {key: [value, time_set]}
         if populate:
-            if len(populate) > self.max_size:
+            if self.max_size is not None and len(populate) > self.max_size:
                 raise ValueError("dict too large to populate cache with (max_size={0!r})".format(self.max_size))
 
             self.update(**populate)
 
         self.timeout = timeout
 
-        self._store = {}  # {key: [value, time_set]}
-
     def __setitem__(self, key, value):
         if not hashable(key):
             raise TypeError("Unhashable type: {0!r}".format(type(key.__class__.__name__)))
+        if self.max_size:
+            if len(self) >= self.size:
+                self.pop(self.oldest()[0])
 
         self._store[key] = [value, time.time()]
 
@@ -426,6 +439,9 @@ class TimeoutCache:
             if t - self._store[key][1] >= self.timeout:
                 del self._store[key]
 
+    def clear(self):
+        self._store = {}
+
     def oldest(self):
         """
         Gets key, value pair for oldest item in cache
@@ -455,11 +471,13 @@ class TimeoutCache:
         return [(k, self._store[k][0]) for k in self._store.keys()]
 
     def update(self, *args, **kwargs):
+        t = time.time()
+
         for kv in args:
-            self[kv[0]] = kv[1]
+            self._store[kv[0]] = [kv[1], t]
 
         for k, v in kwargs.items():
-            self[k] = v
+            self._store[k] = [v, t]
 
     def get(self, key, default=None):
         self._evict_old()
@@ -491,3 +509,17 @@ class TimeoutCache:
     @property
     def size(self):
         return len(self._store)
+
+    def time_left(self, key):
+        """
+        Gets the amount of time an item has left in the cache (in seconds), before it is evicted.
+
+        :param key: Key to check time for.
+        :returns: int
+        """
+        self._evict_old()
+
+        if key not in self._store:
+            raise KeyError("key {0!r} does not exist in cache".format(key))
+
+        return self.timeout - (time.time() - self._store[key][1])
