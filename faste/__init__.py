@@ -23,5 +23,5 @@ SOFTWARE.
 from . import caches
 from . import decorators as decor
 
-__version__ = "0.1.6"
+__version__ = "0.2.0"
 __author__ = "Patrick Dill"
