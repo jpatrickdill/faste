@@ -132,8 +132,8 @@ class RRCache(object):
 class FIFOCache(RRCache):
     """
     First In First Out cache.
-    When the max_size is reached, the cache evicts the last key set without any regard to how often or how many times it
-    was accessed before.
+    When the max_size is reached, the cache evicts the first key set/accessed without any regard to when or
+    how often it is accessed.
 
     Parameters
     ----------
@@ -227,7 +227,7 @@ class LFUCache(object):
     max_size : int
         Maximum # of items that can exist in the cache
     populate : dict
-        Values to pre-populate the cache with, in no given order.
+        Keyword dict of values to pre-populate the cache with, in no given order.
 
     """
 
@@ -351,14 +351,22 @@ class TimeoutCache:
     ----------
     timeout : int
         Cache timeout in seconds. Must be > 0.
+    populate : dict
+        Keyword argument, dict to pre-populate cache with. Values will be evicted after the timeout, just
+        like any others.
 
 
     You can change the timeout at any time by changing :attr:`timeout`
     """
 
-    def __init__(self, timeout):
+    def __init__(self, timeout, populate=None):
         if timeout <= 0:
             raise ValueError("Timeout must be at least 0.")
+        if populate:
+            if len(populate) > self.max_size:
+                raise ValueError("dict too large to populate cache with (max_size={0!r})".format(self.max_size))
+
+            self.update(**populate)
 
         self.timeout = timeout
 
