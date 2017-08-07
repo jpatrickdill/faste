@@ -217,7 +217,7 @@ class MRUCache(FIFOCache):
         return self._store[item]
 
 
-# FREQUENCY BASED CACHES
+# FREQUENCY BASED
 
 
 class LFUCache(object):
@@ -386,7 +386,7 @@ class TimeoutCache:
         if not hashable(key):
             raise TypeError("Unhashable type: {0!r}".format(type(key.__class__.__name__)))
         if self.max_size:
-            if len(self) >= self.size:
+            if len(self) >= self.max_size:
                 self.pop(self.oldest()[0])
 
         self._store[key] = [value, time.time()]

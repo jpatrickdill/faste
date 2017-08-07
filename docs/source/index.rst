@@ -7,6 +7,7 @@ Faste
     :caption: Contents:
 
     caches
+    funcs
 
 
 Faste is a cache library to allow many different cache algorithms in Python, with the functionality of a regular
