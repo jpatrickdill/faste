@@ -38,4 +38,6 @@ correctly with methods.
 
 .. autofunction:: timed_cache
 
+.. autofunction:: rr_cache
 
+.. autofunction:: lfu_cache
