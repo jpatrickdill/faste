@@ -10,7 +10,7 @@ Example ::
 
     import faste
 
-    @faste.decor.timed_cache(120, max_size=10)
+    @faste.decor.rr_cache()
     def takes_long(*args):
         time.sleep(5)
         return args
@@ -30,9 +30,6 @@ Example ::
 
 Cache Decorators
 ----------------
-
-Note: These don't store information on the parenting object of the function, so they may not work
-correctly with methods.
 
 .. currentmodule:: faste.decor
 
