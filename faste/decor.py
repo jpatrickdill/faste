@@ -20,74 +20,72 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .util import hashable
 from . import caches
+from .util import hashable
+
+_caches = {}
 
 
-class CachedFunc:
-    def __init__(self, cache, func, *args, **kwargs):
-        self.func = func
-        self.cache = cache(*args, **kwargs)
+def _cached_func(func, cache, *a, **kw):
+    if id(func) not in _caches:
+        _caches[id(func)] = cache(*a, **kw)
 
-    def __call__(self, *args, **kwargs):
-        call_with = tuple(list(args)+list(kwargs.items()))
-
+    def wrapper(*args, **kwargs):
+        call_with = tuple(args + tuple(kwargs.items()))
         if not hashable(call_with):
-            raise TypeError("Unhashable args+kwargs given: {0!r} {1!r}".format(args, kwargs))
+            raise TypeError("Unhashable args/keywords given for cached function {}".format(func.__name__))
 
-        if call_with not in self.cache:
-            self.cache[call_with] = self.func(*args, **kwargs)
+        if call_with not in _caches[id(func)]:
+            _caches[id(func)][call_with] = func(*args, **kwargs)
 
-        return self.cache[call_with]
+        return _caches[id(func)][call_with]
 
-    def clear_cache(self):
-        self.cache.clear()
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__ = func.__doc__
 
+    def _clear():
+        _caches[id(func)].clear()
 
-def timed_cache(timeout, max_size=128):
-    """
-    Timed cache decorator
+    wrapper.clear_cache = _clear
 
-    :param int timeout: cache timeout
-    :param int max_size: max cache size
-    """
-
-    def new_decorator(func):
-        wrapped = CachedFunc(caches.TimeoutCache, func, timeout, max_size=max_size)
-        wrapped.__name__ = func.__name__
-        wrapped.__doc__ = func.__doc__
-        wrapped.__module__ = func.__module__
-        return wrapped
-    return new_decorator
+    return wrapper
 
 
 def rr_cache(max_size=128):
     """
     Random Replacement cache decorator
 
-    :param int max_size: max cache size
+    :keyword int max_size: max cache size
     """
 
-    def new_decorator(func):
-        wrapped = CachedFunc(caches.RRCache, func, max_size)
-        wrapped.__name__ = func.__name__
-        wrapped.__doc__ = func.__doc__
-        wrapped.__module__ = func.__module__
-        return wrapped
-    return new_decorator
+    def actual_decorator(func):
+        return _cached_func(func, caches.RRCache, max_size)
+
+    return actual_decorator
 
 
 def lfu_cache(max_size=128):
     """
     Least Frequently Used cache decorator
 
-    :param int max_size: max cache size
+    :keyword max_size: max cache size
     """
 
-    def new_decorator(func):
-        wrapped = CachedFunc(caches.LFUCache, func, max_size)
-        wrapped.__name__ = func.__name__
-        wrapped.__doc__ = func.__doc__
-        wrapped.__module__ = func.__module__
-        return wrapped
-    return new_decorator
+    def actual_decorator(func):
+        return _cached_func(func, caches.LFUCache, max_size)
+
+    return actual_decorator
+
+
+def timed_cache(timeout, max_size=128):
+    """
+    Time based decorator
+
+    :param timeout: Cache key timeout
+    :keyword max_size: Max size
+    """
+
+    def actual_decorator(func):
+        return _cached_func(func, caches.TimeoutCache, timeout, max_size=max_size)
+
+    return actual_decorator
