@@ -82,7 +82,7 @@ def timed_cache(timeout, max_size=128):
     Time based decorator
 
     :param timeout: Cache key timeout
-    :keyword max_size: Max size
+    :param max_size: Max size keyword
     """
 
     def actual_decorator(func):

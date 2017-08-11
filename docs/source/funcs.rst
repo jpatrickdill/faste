@@ -15,17 +15,15 @@ Example ::
         time.sleep(5)
         return args
 
-    takes_long()
-    # waits 5 seconds before returning ()
-
-    takes_long()
-    # returns () immediately
-
     takes_long("a", "b", "c")
     # waits 5 seconds before returning ("a", "b", "c",)
 
     takes_long("a", "b", "c")
     # returns ("a", "b", "c",) immediately
+
+    takes_long.clear_cache()
+    takes_long("a", "b", "c")
+    # waits 5 seconds before returning ("a", "b", "c",)
 
 
 Cache Decorators
