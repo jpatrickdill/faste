@@ -31,8 +31,10 @@ Cache Decorators
 
 .. currentmodule:: faste.decor
 
-.. autofunction:: timed_cache
-
 .. autofunction:: rr_cache
 
+.. autofunction:: lru_cache
+
 .. autofunction:: lfu_cache
+
+.. autofunction:: timed_cache
