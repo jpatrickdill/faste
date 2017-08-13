@@ -94,7 +94,7 @@ class RRCache(object):
         return item in self.keys()
 
     def clear(self):
-        self._store = {}
+        self._store = collections.OrderedDict()
 
     def update(self, *args, **kwargs):
         for kv in args:
