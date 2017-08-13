@@ -53,7 +53,7 @@ def _cached_func(func, cache, *a, **kw):
 
 def rr_cache(max_size=128):
     """
-    Random Replacement cache decorator
+    Random Replacement cache decorator, implementing :class:`faste.caches.RRCache`
 
     :keyword int max_size: max cache size
     """
@@ -64,9 +64,22 @@ def rr_cache(max_size=128):
     return actual_decorator
 
 
+def lru_cache(max_size=128):
+    """
+    Least Recently Used cache decorator, implementing :class:`faste.caches.LRUCache`
+
+    :keyword max_size: max cache size
+    """
+
+    def actual_decorator(func):
+        return _cached_func(func, caches.LRUCache, max_size)
+
+    return actual_decorator
+
+
 def lfu_cache(max_size=128):
     """
-    Least Frequently Used cache decorator
+    Least Frequently Used cache decorator, implementing :class:`faste.caches.LFUCache`
 
     :keyword max_size: max cache size
     """
@@ -79,10 +92,11 @@ def lfu_cache(max_size=128):
 
 def timed_cache(timeout, max_size=128):
     """
-    Time based decorator
+    Time based decorator, implementing :class:`faste.caches.TimeoutCache`
 
-    :param timeout: Cache key timeout
-    :param max_size: Max size keyword
+    :param int timeout: Cache key timeout
+
+    :param int max_size: (keyword) max size.
     """
 
     def actual_decorator(func):

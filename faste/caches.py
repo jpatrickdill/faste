@@ -360,7 +360,7 @@ class TimeoutCache:
     max_size : int
         Keyword to give a max amount of items. When this is reached, oldest item is evicted.
     populate : dict
-        Keyword argument, dict to pre-populate cache with. Values will be evicted after the timeout, just
+        Keyword dict to pre-populate cache with. Values will be evicted after the timeout, just
         like any others.
 
 
