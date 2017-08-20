@@ -27,6 +27,88 @@ from random import choice as random_choice
 from .util import hashable
 
 
+# VIEWS
+
+
+class CacheKeys(object):
+    """View for keys in a cache."""
+
+    def __init__(self, cache):
+        self._keys = getattr(cache, "_store").keys()
+
+    def __repr__(self):
+        return "cache_keys({!r})".format(list(self._keys))
+
+    def __len__(self):
+        return len(self._keys)
+
+    def __iter__(self):
+        for k in self._keys:
+            yield k
+
+    def __contains__(self, item):
+        return item in self._keys
+
+    def unpack(self):
+        return list(self._keys)
+
+
+class CacheValues(object):
+    """View for items in a cache."""
+
+    def __init__(self, cache):
+        self._has_tuples = hasattr(cache, "_has_tuples")
+        self._values = getattr(cache, "_store").values()
+
+    def __repr__(self):
+        return "cache_values({!r})".format(self.unpack())
+
+    def __len__(self):
+        return len(self._values)
+
+    def __iter__(self):
+        for v in self._values:
+            if self._has_tuples:
+                yield v[0]
+            else:
+                yield v
+
+    def __contains__(self, item):
+        return item in self.unpack()
+
+    def unpack(self):
+        u = list(self._values)
+        return [u_[0] for u_ in u] if self._has_tuples else u
+
+
+class CacheItems(object):
+    """View for items in a cache."""
+
+    def __init__(self, cache):
+        self._has_tuples = hasattr(cache, "_has_tuples")
+        self._items = getattr(cache, "_store").items()
+
+    def __repr__(self):
+        return "cache_items({!r})".format(self.unpack())
+
+    def __len__(self):
+        return len(self._items)
+
+    def __iter__(self):
+        for k in self._items:
+            if self._has_tuples:
+                yield (k[0], k[1][0])
+            else:
+                yield k
+
+    def __contains__(self, item):
+        return item in self.unpack()
+
+    def unpack(self):
+        u = list(self._items)
+        return [(u_[0], u_[1][0]) for u_ in u] if self._has_tuples else u
+
+
 # ORDER BASED CACHES
 
 
@@ -76,7 +158,7 @@ class RRCache(object):
         self.pop(key)
 
     def __iter__(self):
-        return iter(self.keys())
+        return self.keys()
 
     def __repr__(self):
         return "{}({})".format(self.__class__.__name__, repr([(k, v) for k, v in self._store.items()]))
@@ -123,13 +205,13 @@ class RRCache(object):
         return self._store.move_to_end(key, last=last)
 
     def items(self):
-        return list(self._store.items())
+        return CacheItems(self)
 
     def keys(self):
-        return list(self._store.keys())
+        return CacheKeys(self)
 
     def values(self):
-        return list(self._store.values())
+        return CacheValues(self)
 
 
 class FIFOCache(RRCache):
@@ -234,6 +316,8 @@ class LFUCache(object):
 
     """
 
+    _has_tuples = True
+
     def __init__(self, max_size, populate=None):
         self.max_size = max(max_size, 1)
 
@@ -305,14 +389,14 @@ class LFUCache(object):
             del self[lf[0]]
             return lf
 
+    def items(self):
+        return CacheItems(self)
+
     def keys(self):
-        return self._store.keys()
+        return CacheKeys(self)
 
     def values(self):
-        return [v[0] for v in self._store.values()]
-
-    def items(self):
-        return [(k, self._store[k][0]) for k in self._store.keys()]
+        return CacheValues(self)
 
     def least_frequent(self):
         """
@@ -366,6 +450,8 @@ class TimeoutCache:
 
     You can change the timeout at any time by changing :attr:`timeout`
     """
+
+    _has_tuples = True
 
     def __init__(self, timeout, max_size=None, populate=None):
         if timeout <= 0:
@@ -455,20 +541,14 @@ class TimeoutCache:
 
         return kv[0], kv[1][0]
 
-    def keys(self):
-        self._evict_old()
+    def items(self):
+        return CacheItems(self)
 
-        return self._store.keys()
+    def keys(self):
+        return CacheKeys(self)
 
     def values(self):
-        self._evict_old()
-
-        return [v[0] for v in self._store.values()]
-
-    def items(self):
-        self._evict_old()
-
-        return [(k, self._store[k][0]) for k in self._store.keys()]
+        return CacheValues(self)
 
     def update(self, *args, **kwargs):
         t = time.time()
