@@ -424,6 +424,18 @@ class LFUCache(object):
 
         return self[key]
 
+    def reset_frequencies(self, frequency=0):
+        """Resets all stored frequencies for the cache
+
+        :keyword int frequency: Frequency to reset to, must be >= 0"""
+
+        frequency = max(frequency, 0)
+
+        for key in self._store.keys():
+            self._store[key] = (self._store[key][0], frequency)
+
+        return frequency
+
     @property
     def size(self):
         return len(self._store)

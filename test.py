@@ -17,7 +17,7 @@ for cache_ in [faste.caches.RRCache,
 
     cache = cache_(max_size)
 
-    s = timeit.timeit("cache['abc'] = 'def'", number=n, globals={"cache": cache}) / n
+    s = timeit.timeit("cache['abc'] = 'abcdef'", number=n, globals={"cache": cache}) / n
     g = timeit.timeit("cache['abc']", number=n, globals={"cache": cache}) / n
 
     print("{0.__name__}".format(cache_))
